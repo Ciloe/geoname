@@ -1,0 +1,11 @@
+-- Deploy geoname:0001_extensions to pg
+
+BEGIN;
+
+  CREATE EXTENSION IF NOT EXISTS "ltree";
+  CREATE EXTENSION IF NOT EXISTS "postgis";
+  CREATE EXTENSION IF NOT EXISTS "unaccent";
+  CREATE EXTENSION IF NOT EXISTS "citext";
+  CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+COMMIT;

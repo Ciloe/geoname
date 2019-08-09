@@ -1,0 +1,8 @@
+%syntax-version=1.0.0
+%project=geoname
+%uri=https://github.com/Ciloe/geoname/
+
+0001_extensions 2019-08-09T20:02:26Z Jimmy ESCRICH <contact@escrichjimmy.fr> # Add needed extensions
+0002_domains [0001_extensions] 2019-08-09T21:09:23Z Jimmy ESCRICH <contact@escrichjimmy.fr> # Add domains on database
+0003_abstract [0002_domains] 2019-08-09T21:32:16Z Jimmy ESCRICH <contact@escrichjimmy.fr> # Add abscract schema and tables
+0004_executive [0003_abstract] 2019-08-09T21:50:22Z Jimmy ESCRICH <contact@escrichjimmy.fr> # Add executive schema and localization table

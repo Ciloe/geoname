@@ -1,0 +1,58 @@
+version: "3.2"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.0.1
+    links:
+      - elasticsearch
+    ports:
+      - 5601:5601
+
+  database:
+    build: ./docker/postgres
+    volumes:
+      - ./docker/postgres/data/pgdata:/var/lib/postgresql/data/pgdata
+      - ./docker/postgres/sqitch.conf:/root/.sqitch/sqitch.conf
+      - ./sqitch:/sqitch
+    ports:
+      - 5432:5432
+    environment:
+      - SQITCH_USERNAME=geoname
+      - SQITCH_FULLNAME=Jimmy ESCRICH
+      - SQITCH_EMAIL=contact@escrichjimmy.fr
+      - PGPASSWORD=123
+      - PGPORT=5432
+      - POSTGRES_USER=geoname
+      - POSTGRES_PASSWORD=123
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./:/code
+      - ./docker/nginx/site.conf:/etc/nginx/conf.d/site.conf
+    links:
+      - php
+
+  php:
+    image: php:7-fpm
+    volumes:
+      - ./:/code
+    links:
+      - database
+      - elasticsearch
