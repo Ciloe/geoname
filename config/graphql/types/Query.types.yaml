@@ -1,0 +1,7 @@
+Query:
+  type: "object"
+  config:
+    description: "The public available queries."
+    fields:
+      test:
+        type: Boolean
