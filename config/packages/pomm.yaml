@@ -1,4 +1,5 @@
 pomm:
     configuration:
-        db:
+        geoname:
+            pomm:default: true
             dsn: "%env(DATABASE_URL)%"
