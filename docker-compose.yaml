@@ -25,11 +25,16 @@ services:
     build: ./docker/postgres
     volumes:
       - ./docker/postgres/data/pgdata:/var/lib/postgresql/data/pgdata
+      - ./docker/postgres/sqitch.conf:/root/.sqitch/sqitch.conf
       - ./sqitch:/sqitch
     ports:
       - 5432:5432
     environment:
       - SQITCH_USERNAME=geoname
+      - SQITCH_FULLNAME=Jimmy ESCRICH
+      - SQITCH_EMAIL=contact@escrichjimmy.fr
+      - PGPASSWORD=123
+      - PGPORT=5432
       - POSTGRES_USER=geoname
       - POSTGRES_PASSWORD=123
       - PGDATA=/var/lib/postgresql/data/pgdata
