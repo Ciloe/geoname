@@ -13,4 +13,7 @@ BEGIN;
   SELECT 1/COUNT(*) FROM information_schema.tables
   WHERE table_schema = 'abstract' AND table_name = 'entity_identifiable';
 
+  SELECT 1/COUNT(*) FROM information_schema.tables
+  WHERE table_schema = 'abstract' AND table_name = 'entity_geometry';
+
 ROLLBACK;
