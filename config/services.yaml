@@ -25,3 +25,44 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    _instanceof:
+        ###
+        # GraphQl
+        ###
+        GraphQL\Type\Definition\Type:
+            tags: ['overblog_graphql.type']
+        Overblog\GraphQLBundle\Definition\Resolver\ResolverInterface:
+            tags: ['overblog_graphql.resolver']
+        Overblog\GraphQLBundle\Definition\Resolver\MutationInterface:
+            tags: ['overblog_graphql.mutation']
+        Overblog\GraphQLBundle\ExpressionLanguage\ExpressionFunction:
+            tags: ['overblog_graphql.expression_function']
+
+        ###
+        # Pomm
+        ###
+        PommProject\ModelManager\Model\Model:
+            tags: ['pomm.model']
+
+    ###
+    # Toolbar
+    ###
+    App\Listener\Event\ToolbarUpdateListener:
+        arguments:
+            $env: '%env(APP_ENV)%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.response }
+
+    ###
+    # Pomm
+    ###
+    App\Database\Converter\:
+        resource: '../src/Database/Converter'
+        tags: ['app.pomm.converter']
+
+    App\Database\Converter\DIConverters:
+        public: true
+
+    App\Database\Builder\SessionBuilder:
+        calls:
+            - [setConverters, ['@App\Database\Converter\DIConverters']]

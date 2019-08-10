@@ -14,11 +14,10 @@ BEGIN;
     type TAG3D NOT NULL,
     tags TAG3D_ARRAY NOT NULL,
 
-    coordinates GEOMETRY,
     path LTREE,
 
     id_parent BIGINT REFERENCES executive.localization(id)
-  ) INHERITS (abstract.entity);
+  ) INHERITS (abstract.entity, abstract.entity_geometry);
 
   CREATE INDEX IF NOT EXISTS executive_localization_id_parent_idx
     ON executive.localization(id_parent);
