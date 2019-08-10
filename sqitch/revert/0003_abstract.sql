@@ -5,6 +5,7 @@ BEGIN;
   DROP TABLE IF EXISTS abstract.entity CASCADE;
   DROP TABLE IF EXISTS abstract.entity_datable CASCADE;
   DROP TABLE IF EXISTS abstract.entity_identifiable CASCADE;
+  DROP TABLE IF EXISTS abstract.entity_geometry CASCADE;
 
   DROP SCHEMA IF EXISTS abstract CASCADE;
 
