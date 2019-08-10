@@ -6,3 +6,4 @@
 0002_domains [0001_extensions] 2019-08-09T21:09:23Z Jimmy ESCRICH <contact@escrichjimmy.fr> # Add domains on database
 0003_abstract [0002_domains] 2019-08-09T21:32:16Z Jimmy ESCRICH <contact@escrichjimmy.fr> # Add abscract schema and tables
 0004_executive [0003_abstract] 2019-08-09T21:50:22Z Jimmy ESCRICH <contact@escrichjimmy.fr> # Add executive schema and localization table
+@v0.0.1-dev 2019-08-10T09:18:48Z Jimmy ESCRICH <contact@escrichjimmy.fr> # Generate PHP database structure

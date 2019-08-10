@@ -11,3 +11,7 @@
 /docker/postgres/data/
 !/docker/postgres/data/.gitignore
 ###< docker ###
+
+###> sqitch ###
+/sqitch/sqitch.conf
+###< docker ###
