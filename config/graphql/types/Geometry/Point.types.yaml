@@ -1,0 +1,13 @@
+Point:
+  type: "object"
+  config:
+    description: "A geometry point."
+    fields:
+      longitude:
+        type: "Float!"
+        description: "Tha longitude value."
+        resolve: "@=value[0]"
+      latitude:
+        type: "Float!"
+        description: "Tha latitude value."
+        resolve: "@=value[1]"

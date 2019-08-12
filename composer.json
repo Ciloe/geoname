@@ -23,7 +23,11 @@
         "symfony/yaml": "4.3.*"
     },
     "require-dev": {
-        "overblog/graphiql-bundle": "^0.1.2"
+        "overblog/graphiql-bundle": "^0.1.2",
+        "symfony/debug-pack": "^1.0",
+        "symfony/profiler-pack": "^1.0",
+        "symfony/test-pack": "^1.0",
+        "symfony/var-dumper": "4.3.*"
     },
     "config": {
         "preferred-install": {

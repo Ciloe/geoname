@@ -60,9 +60,9 @@ services:
         resource: '../src/Database/Converter'
         tags: ['app.pomm.converter']
 
-    App\Database\Converter\DIConverters:
+    App\Database\Converter\DIConverter:
         public: true
 
     App\Database\Builder\SessionBuilder:
         calls:
-            - [setConverters, ['@App\Database\Converter\DIConverters']]
+            - [setConverters, ['@App\Database\Converter\DIConverter']]

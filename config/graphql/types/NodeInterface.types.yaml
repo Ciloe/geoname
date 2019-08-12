@@ -1,0 +1,5 @@
+NodeInterface:
+  type: "relay-node"
+  config:
+    description: "Node interface used in pagination"
+    resolveType: "@=service('overblog_graphql.test.resolver.global').typeResolver(value)"
