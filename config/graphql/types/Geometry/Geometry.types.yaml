@@ -1,0 +1,9 @@
+Geometry:
+  type: "interface"
+  config:
+    description: "The geometry base type."
+    resolveType: "@=resolver('LocalizationType', [value.type])"
+    fields:
+      type:
+        type: "GeometryTypeEnum!"
+        description: "The geometry type."

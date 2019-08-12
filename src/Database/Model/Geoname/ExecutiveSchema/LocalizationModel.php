@@ -34,4 +34,22 @@ class LocalizationModel extends Model
         $this->structure = new LocalizationStructure;
         $this->flexible_entity_class = Localization::class;
     }
+
+    /**
+     * @param Where $where
+     * @param int $offset
+     * @param int $limit
+     *
+     * @return \PommProject\ModelManager\Model\CollectionIterator
+     */
+    public function findAllWithPagination(Where $where, int $offset, int $limit)
+    {
+        $sql = $this->getFindWhereSql($where, $this->createProjection());
+
+        return $this->query(
+            sprintf("%s offset %d limit %d", $sql, $offset, $limit),
+            $where->getValues(),
+            $this->createProjection()
+        );
+    }
 }
