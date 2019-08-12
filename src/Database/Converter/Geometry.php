@@ -46,10 +46,8 @@ class Geometry implements ConverterInterface, BaseConverterInterface
     public function toPgStandardFormat($data, $type, Session $session)
     {
         $result = $session->getConnection()->executeAnonymousQuery(sprintf(
-            "SELECT ST_SetSRID(%s(%s,%s)::public.geometry, 4326) AS geometry",
-            $data->type,
-            $data->coordinates->longitude,
-            $data->coordinates->latitude
+            "SELECT ST_GeomFromGeoJSON(%s) AS geometry",
+            json_encode($data)
         ));
 
         if (! $result) {

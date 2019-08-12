@@ -1,0 +1,8 @@
+LocalizationTypeEnum:
+  type: "enum"
+  config:
+    description: "Localization types."
+    values:
+      COUNTRY:
+        value: "Localization.Type.Country"
+        description: "Male gender."

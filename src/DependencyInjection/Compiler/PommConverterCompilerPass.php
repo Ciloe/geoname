@@ -19,10 +19,10 @@ class PommConverterCompilerPass implements CompilerPassInterface
 
         $taggedServices = $container->findTaggedServiceIds('app.pomm.converter');
         foreach ($taggedServices as $id => $tags) {
-            foreach ($tags as $attributes) {
+            if ($id !== DIConverter::class) {
                 $definition->addMethodCall('addConverter', [
                     new Reference($id),
-                    $attributes["alias"] ?? null
+                    $tags["alias"] ?? null
                 ]);
             }
         }
