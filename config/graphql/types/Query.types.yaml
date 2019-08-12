@@ -3,5 +3,23 @@ Query:
   config:
     description: "The public available queries."
     fields:
-      test:
-        type: Boolean
+      localization:
+        type: "Localization"
+        args:
+          id:
+            type: "String!"
+        resolve: "@=resolver('Localization', [args['id']])"
+        description: "The localization getting by uuid."
+
+      localizations:
+        type: "LocalizationConnection"
+        argsBuilder: "Relay::Connection"
+        args:
+          search:
+            type: "String"
+            description: "The searching pattern in sql LIKE %% format"
+          isActive:
+            type: "Boolean"
+            description: "Select only active localization"
+        resolve: "@=resolver('Localizations', [args])"
+        description: "A paginated list of localization."

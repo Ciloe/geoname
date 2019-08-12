@@ -2,6 +2,13 @@ overblog_graphql:
     definitions:
         schema:
             query: Query
+            types:
+                - GeometryPoint
+                - GeometryMultiPoint
+                - GeometryLineString
+                - GeometryMultiLineString
+                - GeometryPolygon
+                - GeometryMultiPolygon
         mappings:
             types:
                 -

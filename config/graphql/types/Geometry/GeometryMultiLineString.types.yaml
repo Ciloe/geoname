@@ -1,0 +1,9 @@
+GeometryMultiLineString:
+  type: "object"
+  inherits: [Geometry]
+  config:
+    interfaces: [Geometry]
+    fields:
+      coordinates:
+        type: "[[Point!]!]!"
+        description: "The array of coordinates."

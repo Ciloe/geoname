@@ -1,0 +1,21 @@
+GeometryTypeEnum:
+  type: "enum"
+  config:
+    description: "Geometry types."
+    values:
+      POSITION:
+        value: "Position"
+      POINT:
+        value: "Point"
+      MULTI_POINT:
+        value: "MultiPoint"
+      LINE_STRING:
+        value: "LineString"
+      MULTI_LINE_STRING:
+        value: "MultiLineString"
+      POLYGON:
+        value: "Polygon"
+      MULTI_POLYGON:
+        value: "MultiPolygon"
+      GEOMETRY_COLLECTION:
+        value: "GeometryCollection"
