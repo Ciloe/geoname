@@ -14,7 +14,7 @@ Localization:
         type: "String!"
         description: "The Localization name."
       type:
-        type: "LocalizationTypeEnum!"
+        type: "String!"
         description: "The Localization type."
         resolve: "@=value.type.__toString()"
       coordinates:
@@ -35,6 +35,10 @@ Localization:
       id_parent:
         type: "Int"
         description: "The first parent Localization id."
+      parent:
+        type: "Localization"
+        description: "The parent localization."
+        resolve: "@=resolver('LocalizationParent', [value['id_parent']])"
     interfaces: ["NodeInterface"]
 
 LocalizationConnection:
