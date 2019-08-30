@@ -27,8 +27,7 @@ services:
       - ./docker/postgres/data/pgdata:/var/lib/postgresql/data/pgdata
       - ./docker/postgres/sqitch.conf:/root/.sqitch/sqitch.conf
       - ./sqitch:/sqitch
-    ports:
-      - 5432:5432
+      - ./import:/import
     environment:
       - SQITCH_USERNAME=geoname
       - SQITCH_FULLNAME=Jimmy ESCRICH
@@ -41,8 +40,6 @@ services:
 
   nginx:
     image: nginx:latest
-    ports:
-      - 80:80
     volumes:
       - ./:/code
       - ./docker/nginx/site.conf:/etc/nginx/conf.d/site.conf
