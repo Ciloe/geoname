@@ -1,0 +1,3 @@
+{
+  "query": "query one {\n  localization (id: \"4074506f-1463-498e-b335-d18c71816e85\") {\n    globalId\n    name\n    path\n    type\n    coordinates {\n      type\n    }\n    id_parent\n  }\n}"
+}
