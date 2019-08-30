@@ -47,6 +47,15 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
         return !$localizations->isEmpty() ? $localizations->current() : null;
     }
 
+    public function resolveParent(?int $id): ?Localization
+    {
+        if (is_null($id)) {
+            return null;
+        }
+
+        return $this->model->findByPK(['id' => $id]);
+    }
+
     /**
      * @param Argument $args
      *
@@ -80,6 +89,7 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
     {
         return [
             'resolveLocalizationType' => 'LocalizationType',
+            'resolveParent' => 'LocalizationParent',
             'resolveLocalization' => 'Localization',
             'resolveList' => 'Localizations',
         ];
