@@ -59,6 +59,26 @@ services:
             - { name: kernel.event_listener, event: kernel.response }
 
     ###
+    # Cache
+    ###
+    App\Cache\CacheMap:
+        arguments:
+            - "@cache.app"
+        public: true
+
+    ###
+    # DataLoader
+    ###
+    graphql_promise_adapter:
+        class: Overblog\DataLoader\Promise\Adapter\Webonyx\GraphQL\SyncPromiseAdapter
+        public: true
+
+    Overblog\PromiseAdapter\PromiseAdapterInterface:
+        class: Overblog\PromiseAdapter\Adapter\WebonyxGraphQLSyncPromiseAdapter
+        arguments:
+            - "@graphql_promise_adapter"
+
+    ###
     # Pomm
     ###
     App\Database\Converter\:
