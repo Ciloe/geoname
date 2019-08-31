@@ -1,4 +1,6 @@
 overblog_graphql:
+    services:
+        promise_adapter: "graphql_promise_adapter"
     definitions:
         schema:
             query: Query
