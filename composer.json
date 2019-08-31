@@ -19,6 +19,7 @@
         "overblog/dataloader-bundle": "^0.4.2",
         "overblog/graphql-bundle": "^0.12.1",
         "pomm-project/pomm-bundle": "^2.4",
+        "ruflin/elastica": "^6.1",
         "symfony/console": "4.3.*",
         "symfony/dotenv": "4.3.*",
         "symfony/flex": "^1.3.1",
