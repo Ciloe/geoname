@@ -1,0 +1,3 @@
+overblog_dataloader:
+  defaults:
+    promise_adapter: "graphql_promise_adapter"
