@@ -20,6 +20,12 @@
     "monolog/monolog": {
         "version": "1.24.0"
     },
+    "overblog/dataloader-bundle": {
+        "version": "v0.4.2"
+    },
+    "overblog/dataloader-php": {
+        "version": "v0.5.3"
+    },
     "overblog/graphiql-bundle": {
         "version": "0.1",
         "recipe": {
