@@ -79,6 +79,13 @@ services:
             - "@graphql_promise_adapter"
 
     ###
+    # ElasticSearch
+    ###
+    Elastica\Client:
+        $config:
+            host: '%env(ELASTIC_SEARCH_HOST)%'
+
+    ###
     # Pomm
     ###
     App\Database\Converter\:

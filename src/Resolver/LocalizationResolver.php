@@ -68,15 +68,6 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
         return $this->dataLoader->load($id);
     }
 
-    public function resolveParent(?int $id): ?Localization
-    {
-        if (is_null($id)) {
-            return null;
-        }
-
-        return $this->model->findByPK(['id' => $id]);
-    }
-
     /**
      * @param Argument $args
      *
