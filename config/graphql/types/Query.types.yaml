@@ -17,9 +17,9 @@ Query:
         args:
           search:
             type: "String"
-            description: "The searching pattern in sql LIKE %% format"
-          isActive:
+            description: "The searching pattern with Elastic search."
+          hasParent:
             type: "Boolean"
-            description: "Select only active localization"
+            description: "Select only localization wish has parent."
         resolve: "@=resolver('Localizations', [args])"
         description: "A paginated list of localization."

@@ -155,7 +155,12 @@ class LocalizationBuilder
 
         for ($i = 0; $i <= ceil($count/$limit); $i++) {
             $documents = [];
-            $localizations = iterator_to_array($this->model->findAllWithPagination(Where::create('id_parent IS NOT NULL'), $i * $limit, $limit));
+            $localizations = iterator_to_array($this->model->findAllWithPagination(
+                Where::create(),
+                $i * $limit,
+                $limit
+            ));
+
             foreach ($localizations as $localization) {
                 $documents[] = $this->buildDocument($localization);
             }

@@ -32,9 +32,6 @@ Localization:
       path:
         type: "[Int!]!"
         description: "The parent Localization ids."
-      id_parent:
-        type: "Int"
-        description: "The first parent Localization id."
       parent:
         type: "Localization"
         description: "The parent localization."
