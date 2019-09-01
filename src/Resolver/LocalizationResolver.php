@@ -3,21 +3,23 @@
 namespace App\Resolver;
 
 use App\Database\Model\Geoname\ExecutiveSchema\Localization;
-use App\Database\Model\Geoname\ExecutiveSchema\LocalizationModel;
+use App\Indexation\LocalizationIndex;
 use App\Loader\LocalizationDataLoader;
+use Elastica\Query;
+use Elastica\QueryBuilder;
+use Elastica\ResultSet;
 use GraphQL\Executor\Promise\Promise;
 use Overblog\GraphQLBundle\Definition\Argument;
 use Overblog\GraphQLBundle\Definition\Resolver\AliasedInterface;
 use Overblog\GraphQLBundle\Definition\Resolver\ResolverInterface;
 use Overblog\GraphQLBundle\Relay\Connection\Paginator;
-use PommProject\Foundation\Where;
 
 final class LocalizationResolver implements ResolverInterface, AliasedInterface
 {
     /**
-     * @var LocalizationModel
+     * @var LocalizationIndex
      */
-    private $model;
+    private $index;
 
     /**
      * @var LocalizationDataLoader
@@ -25,12 +27,17 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
     private $dataLoader;
 
     /**
-     * @param LocalizationModel $model
+     * @var ResultSet[]
+     */
+    private $resultSets = [];
+
+    /**
+     * @param LocalizationIndex $index
      * @param LocalizationDataLoader $dataLoader
      */
-    public function __construct(LocalizationModel $model, LocalizationDataLoader $dataLoader)
+    public function __construct(LocalizationIndex $index, LocalizationDataLoader $dataLoader)
     {
-        $this->model = $model;
+        $this->index = $index;
         $this->dataLoader = $dataLoader;
     }
 
@@ -59,7 +66,7 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
      *
      * @return Promise|Localization|null
      */
-    public function resolveParent(?int $id): Promise
+    public function resolveParent(?int $id): ?Promise
     {
         if (is_null($id)) {
             return null;
@@ -75,26 +82,47 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
      */
     public function resolveList(Argument $args)
     {
-        $where = Where::create();
+        $queryBuilder = new QueryBuilder();
+        $boolQuery = $queryBuilder->query()->bool();
 
-        if (isset($args['search'])) {
-            $where->andWhere('name', [sprintf('LIKE %%s%', $args['search'])]);
+        if (!empty($args['search'])) {
+            $matchQuery = $queryBuilder->query()->multi_match()
+                ->setQuery($args['search'])
+                ->setFields(['name', 'name.search'])
+                ->setOperator('and')
+                ->setFuzziness('AUTO')
+            ;
+
+            $boolQuery->addFilter($matchQuery);
         }
 
-        if (isset($args['isActive'])) {
-            $where->andWhere('active', [$args['isActive']]);
+        if (isset($args['hasParent'])) {
+            if ($args['hasParent']) {
+                $boolQuery->addMust($queryBuilder->query()->exists('parent'));
+            } else {
+                $boolQuery->addMustNot($queryBuilder->query()->exists('parent'));
+            }
         }
 
-        $paginator = new Paginator(function ($limit, $offset) use ($where) {
-            $list = $this->model->findAllWithPagination($where, $limit, $offset);
+        $uniqId = uniqid();
+        $query = (new Query())->setQuery($boolQuery);
+        $paginator = new Paginator(function ($offset, $limit) use ($query, $uniqId) {
+            $query->setFrom($offset)
+                ->setSize($limit)
+            ;
 
-            return $this->dataLoader->loadMany(array_map(function (Localization $localization) {
-                return $localization->get('id');
-            }, iterator_to_array($list)));
+            $this->resultSets[$uniqId] = $this->index->search($query);
+            $ids = $this->index->getResultSetIds($this->resultSets[$uniqId]);
+
+            return $this->dataLoader->loadMany($ids);
         }, Paginator::MODE_PROMISE);
 
-        return $paginator->auto($args, function() use ($where) {
-            return $this->model->countWhere($where);
+        return $paginator->auto($args, function() use ($query, $uniqId) {
+            if (!empty($args['last'])) {
+                return $this->index->count($query);
+            }
+
+            return $this->resultSets[$uniqId]->getTotalHits();
         });
     }
 
