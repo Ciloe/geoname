@@ -67,6 +67,15 @@ services:
         public: true
 
     ###
+    # DataCollector
+    ###
+    App\Collector\ESCollector:
+        tags:
+            -
+                name:     data_collector
+                template: 'Collector/es_collector.html.twig'
+                id:       'app.es_collector'
+    ###
     # DataLoader
     ###
     graphql_promise_adapter:

@@ -1,0 +1,115 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% import _self as helper %}
+
+{% block toolbar %}
+    {% if collector.countAll != 0 %}
+        {% set icon %}
+            {{ include('Collector/es_collector.svg') }}
+            <span class="sf-toolbar-value">{{ collector.countAll }}</span>
+            <span class="sf-toolbar-info-piece-additional-detail">
+                <span class="sf-toolbar-label">in</span>
+                <span class="sf-toolbar-value">{{ '%0.2f'|format(collector.allTime) }}</span>
+                <span class="sf-toolbar-label">ms</span>
+            </span>
+        {% endset %}
+
+        {% set text %}
+            <div class="sf-toolbar-info-piece">
+                <b>Calls success</b>
+                <span class="sf-toolbar-status sf-toolbar-status-{{ collector.countSuccess ? 'green' }}">{{ collector.countSuccess|default(0) }}</span>
+            </div>
+            <div class="sf-toolbar-info-piece">
+                <b>Calls error</b>
+                <span class="sf-toolbar-status sf-toolbar-status-{{ collector.countError ? 'red' }}">{{ collector.countError|default(0) }}</span>
+            </div>
+        {% endset %}
+
+        {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { 'link': true }) }}
+    {% endif %}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+{% endblock %}
+
+{% block menu %}
+    <span class="label {{ collector.countAll == 0 ? 'disabled' }}">
+        <span class="icon">{{ include('Collector/es_collector.svg') }}</span>
+        <strong>Elastic Search</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Elastic Search calls</h2>
+
+    {% if collector.countAll == 0 %}
+        <div class="empty">
+            <p>No queries sent.</p>
+        </div>
+    {% else %}
+        <div class="sf-tabs">
+            <div class="tab">
+                <h3 class="tab-title">Success calls <span class="badge status-success">{{ collector.countSuccess }}</span></h3>
+                <p class="text-muted">All success queries in ES.</p>
+
+                <div class="tab-content">
+                    {% if collector.countSuccess == 0 %}
+                        <div class="empty">
+                            <p>There are no success queries.</p>
+                        </div>
+                    {% else %}
+                        {{ helper.render_table(collector.success) }}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="tab">
+                <h3 class="tab-title">Error calls <span class="badge status-success">{{ collector.countError }}</span></h3>
+                <p class="text-muted">All error queries in ES.</p>
+
+                <div class="tab-content">
+                    {% if collector.countError == 0 %}
+                        <div class="empty">
+                            <p>There are no error queries.</p>
+                        </div>
+                    {% else %}
+                        {{ helper.render_table(collector.error, true) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% macro render_table(data_array, is_error = false) %}
+    <table class="logs">
+        <thead>
+        <tr>
+            <th>Index</th>
+            <th>Time (ms)</th>
+            <th>Query</th>
+            <th>Results</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for data in data_array %}
+            {% if is_error %}
+                {% set time = index.index.client.lastResponse.queryTime %}
+            {% else %}
+                {% set time = data.resultSet.totalTime %}
+            {% endif %}
+            {% set css_class = time < 50 ? ''
+                : time < 100 ? 'status-warning'
+                : time >= 100 ? 'status-error'
+            %}
+            <tr class="{{ css_class }}">
+                <td class="font-normal text-small" nowrap>{{ data.index.name }}/{{ data.index.index.name }}</td>
+                <td class="font-normal text-small text-bold" nowrap>{{ time }}</td>
+                <td class="font-normal">{{ data.query.toArray|json_encode(constant('JSON_PRETTY_PRINT'))|raw }}</td>
+                <td class="font-normal">{{ is_error ? dump(data.exception.message) : dump(data.resultSet.results) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
