@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.7"
 
 services:
   elasticsearch:
@@ -22,34 +22,43 @@ services:
       - 5601:5601
 
   database:
-    build: ./docker/postgres
-    volumes:
-      - ./docker/postgres/data/pgdata:/var/lib/postgresql/data/pgdata
-      - ./docker/postgres/sqitch.conf:/root/.sqitch/sqitch.conf
-      - ./sqitch:/sqitch
-      - ./import:/import
+    build:
+      args:
+        VERSION: $POSTGRES_VERSION
+      context: .
+      dockerfile: ./docker/postgres/Dockerfile
     environment:
-      - SQITCH_USERNAME=geoname
-      - SQITCH_FULLNAME=Jimmy ESCRICH
-      - SQITCH_EMAIL=contact@escrichjimmy.fr
-      - PGPASSWORD=123
-      - PGPORT=5432
-      - POSTGRES_USER=geoname
-      - POSTGRES_PASSWORD=123
-      - PGDATA=/var/lib/postgresql/data/pgdata
-
-  nginx:
-    image: nginx:latest
+      - SQITCH_USERNAME=$SQITCH_USERNAME
+      - SQITCH_FULLNAME=$SQITCH_FULLNAME
+      - SQITCH_EMAIL=$SQITCH_EMAIL
+      - PGPASSWORD=$PGPASSWORD
+      - PGPORT=$PGPORT
+      - POSTGRES_VERSION=$POSTGRES_VERSION
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+      - PGDATA=$PGDATA
     volumes:
       - ./:/code
-      - ./docker/nginx/site.conf:/etc/nginx/conf.d/site.conf
+
+  nginx:
+    build:
+      args:
+        VERSION: $NGINX_VERSION
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+      target: $APP_ENV
     links:
       - php
 
   php:
-    build: ./docker/php
-    volumes:
-      - ./:/code
+    build:
+      args:
+        VERSION: $PHP_VERSION
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+      target: $APP_ENV
     links:
       - database
       - elasticsearch
+    volumes:
+      - ./:/code
