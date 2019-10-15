@@ -1,0 +1,43 @@
+resources:
+  limits:
+    cpu: 2
+    memory: 1024Mi
+  requests:
+    cpu: 0.25
+    memory: 256Mi
+
+postgres:
+  name: "postgres"
+  image: "babenkoivan/symfony-dummy-project-mysql"
+  port: 5432
+  env:
+    secret:
+      MYSQL_DATABASE:
+        name: "database-secret"
+        key: "database"
+      MYSQL_ROOT_PASSWORD:
+        name: "database-secret"
+        key: "password"
+
+nginx:
+  hosts:
+    - path:
+        - "/"
+      backend: "nginx"
+      port: 80
+    - path:
+        - "/postgres"
+      backend: "postgres"
+      port: 5432
+  name: "nginx"
+  image: "babenkoivan/symfony-dummy-project-nginx"
+
+php:
+  name: "php"
+  image: "babenkoivan/symfony-dummy-project-php-fpm"
+  port: 9000
+  env:
+    secret:
+      DATABASE_URL:
+        name: "database-secret"
+        key: "url"
