@@ -14,16 +14,21 @@ BEGIN;
     type TAG3D NOT NULL,
     tags TAG3D_ARRAY NOT NULL,
 
-    coordinates GEOMETRY,
     path LTREE,
 
     id_parent BIGINT REFERENCES executive.localization(id)
-  ) INHERITS (abstract.entity);
+  ) INHERITS (abstract.entity, abstract.entity_geometry);
 
   CREATE INDEX IF NOT EXISTS executive_localization_id_parent_idx
     ON executive.localization(id_parent);
+  CREATE UNIQUE INDEX IF NOT EXISTS executive_localization_uuid_idx
+    ON executive.localization(uuid);
+  CREATE INDEX IF NOT EXISTS executive_localization_geo_name_idx
+    ON executive.localization(((alt->>'geoname')::INT));
   CREATE INDEX IF NOT EXISTS executive_localization_type_idx
-    ON executive.localization(type);
+    ON executive.localization USING GIST (type);
+  CREATE INDEX IF NOT EXISTS executive_localization_tags_idx
+    ON executive.localization USING GIST (tags);
   CREATE INDEX IF NOT EXISTS executive_localization_coordinates_idx
     ON executive.localization USING GIST (coordinates);
   CREATE INDEX IF NOT EXISTS executive_localization_path_gist_idx
@@ -34,7 +39,7 @@ BEGIN;
   CREATE OR REPLACE FUNCTION executive.localization_insert_or_update() RETURNS TRIGGER AS
   $$
   BEGIN
-    IF (TG_OP = 'INSERT' OR NEW.id_parent != OLD.id_parent) THEN
+    IF (TG_OP = 'INSERT' OR NEW.id_parent IS DISTINCT FROM OLD.id_parent) THEN
       IF NEW.id_parent IS NULL THEN
         NEW.path = text2ltree(NEW.id::TEXT);
       ELSE

@@ -17,6 +17,10 @@ BEGIN;
     deleted_at TIMESTAMPTZ DEFAULT NULL
   );
 
+  CREATE TABLE IF NOT EXISTS abstract.entity_geometry (
+    coordinates GEOMETRY
+  );
+
   CREATE TABLE IF NOT EXISTS abstract.entity (
     data JSONB DEFAULT NULL,
     alt JSONB DEFAULT NULL,

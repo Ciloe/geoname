@@ -1,0 +1,52 @@
+Localization:
+  type: "object"
+  config:
+    description: "Localization object."
+    fields:
+      globalId:
+        builder: "Relay::GlobalId"
+        description: "The node id. A base 64 encode of 'Localization:$id'."
+      id:
+        type: "ID!"
+        description: "The Localization uuid."
+        resolve: "@=value.uuid"
+      name:
+        type: "String!"
+        description: "The Localization name."
+      type:
+        type: "String!"
+        description: "The Localization type."
+        resolve: "@=value.type.__toString()"
+      coordinates:
+        type: "Geometry"
+        description: "The Localization geometry."
+      tags:
+        type: "[String!]!"
+        description: "The Localization tags in tag3D."
+      data:
+        type: "[String!]"
+        description: "The Localization data."
+      alt:
+        type: "[String!]"
+        description: "The Localization external ids."
+      path:
+        type: "[Int!]!"
+        description: "The parent Localization ids."
+      id_parent:
+        type: "Int"
+        description: "The first parent Localization id."
+      parent:
+        type: "Localization"
+        description: "The parent localization."
+        resolve: "@=resolver('LocalizationParent', [value['id_parent']])"
+    interfaces: ["NodeInterface"]
+
+LocalizationConnection:
+  type: "relay-connection"
+  config:
+    description: "Localization relay connection type."
+    nodeType: "Localization"
+    connectionFields:
+      totalCount:
+        type: "Int"
+        description: "The amount of localizations."

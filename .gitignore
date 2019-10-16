@@ -8,6 +8,22 @@
 ###< symfony/framework-bundle ###
 
 ###> docker ###
-/docker/postgres/data/
+/docker/postgres/data
 !/docker/postgres/data/.gitignore
+docker-compose.override.yml
 ###< docker ###
+
+###> sqitch ###
+/sqitch/sqitch.conf
+###< sqitch ###
+
+###> import ###
+/import
+!/import/.gitignore
+###< import ###
+
+###> symfony/phpunit-bridge ###
+.phpunit
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
