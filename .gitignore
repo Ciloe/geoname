@@ -8,9 +8,9 @@
 ###< symfony/framework-bundle ###
 
 ###> docker ###
-/docker/postgres/data
-!/docker/postgres/data/.gitignore
-docker-compose.override.yml
+/docker/postgres/data/pgdata
+!/docker/postgres/data/pgdata/.gitignore
+docker-compose.override.yaml
 ###< docker ###
 
 ###> sqitch ###

@@ -59,14 +59,14 @@ SELECT
 FROM (
   SELECT regexp_split_to_array(a[1], '\.'), a[2] AS type
   FROM (
-    SELECT regexp_split_to_array(regexp_split_to_table(pg_read_file('/import/featureCode.txt'), E'\\n+'), E'\\t+')
+    SELECT regexp_split_to_array(regexp_split_to_table(pg_read_file('/import/featureCodes_en.txt'), E'\\n+'), E'\\t+')
   ) AS dt(a)
 ) AS dt(a)
 WHERE a[2] IS NOT NULL;
 SQL;
     const SQL_INSERT_IMPORT = <<<SQL
 DELETE FROM executive.localization WHERE 1 = 1;
-INSERT INTO executive.localization (uuid, name, coordinates, type, alt, tags, data, created_at)
+INSERT INTO executive.localization (uuid, name, coordinates, "type", alt, tags, data, created_at)
 SELECT
   uuid_generate_v4(),
   asciiname,
@@ -88,7 +88,7 @@ SELECT
     ),
   g.moddate::timestamp
 FROM geoname g
-LEFT JOIN feature_code fc ON g.fclass = fc.class AND g.fcode = fc.code
+LEFT JOIN feature_code fc ON g.fclass = fc.class AND g.fcode = fc.code;
 SQL;
 
     protected static $defaultName = 'import:geo-name:cities';

@@ -39,6 +39,7 @@ services:
       - PGDATA=$PGDATA
     volumes:
       - ./:/code
+      - ./import:/import
 
   nginx:
     build:
