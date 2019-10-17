@@ -4,6 +4,8 @@ namespace App\Resolver;
 
 use App\Database\Model\Geoname\ExecutiveSchema\Localization;
 use App\Database\Model\Geoname\ExecutiveSchema\LocalizationModel;
+use App\Loader\LocalizationDataLoader;
+use GraphQL\Executor\Promise\Promise;
 use Overblog\GraphQLBundle\Definition\Argument;
 use Overblog\GraphQLBundle\Definition\Resolver\AliasedInterface;
 use Overblog\GraphQLBundle\Definition\Resolver\ResolverInterface;
@@ -18,11 +20,18 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
     private $model;
 
     /**
-     * @param LocalizationModel $model
+     * @var LocalizationDataLoader
      */
-    public function __construct(LocalizationModel $model)
+    private $dataLoader;
+
+    /**
+     * @param LocalizationModel $model
+     * @param LocalizationDataLoader $dataLoader
+     */
+    public function __construct(LocalizationModel $model, LocalizationDataLoader $dataLoader)
     {
         $this->model = $model;
+        $this->dataLoader = $dataLoader;
     }
 
     /**
@@ -38,13 +47,25 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
     /**
      * @param string $uuid
      *
-     * @return Localization|null
+     * @return Promise|Localization|null
      */
-    public function resolveLocalization(string $uuid): ?Localization
+    public function resolveLocalization(string $uuid): Promise
     {
-        $localizations = $this->model->findWhere('uuid = $*', [$uuid]);
+        return $this->dataLoader->load($uuid);
+    }
 
-        return !$localizations->isEmpty() ? $localizations->current() : null;
+    /**
+     * @param int|null $id
+     *
+     * @return Promise|Localization|null
+     */
+    public function resolveParent(?int $id): Promise
+    {
+        if (is_null($id)) {
+            return null;
+        }
+
+        return $this->dataLoader->load($id);
     }
 
     public function resolveParent(?int $id): ?Localization
@@ -74,8 +95,12 @@ final class LocalizationResolver implements ResolverInterface, AliasedInterface
         }
 
         $paginator = new Paginator(function ($limit, $offset) use ($where) {
-            return iterator_to_array($this->model->findAllWithPagination($where, $limit, $offset));
-        }, Paginator::MODE_REGULAR);
+            $list = $this->model->findAllWithPagination($where, $limit, $offset);
+
+            return $this->dataLoader->loadMany(array_map(function (Localization $localization) {
+                return $localization->get('id');
+            }, iterator_to_array($list)));
+        }, Paginator::MODE_PROMISE);
 
         return $paginator->auto($args, function() use ($where) {
             return $this->model->countWhere($where);
