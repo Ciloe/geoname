@@ -17,6 +17,10 @@ docker-compose.override.yaml
 /sqitch/sqitch.conf
 ###< sqitch ###
 
+###> bench ###
+/bench/plot
+###< bench ###
+
 ###> import ###
 /import
 !/import/.gitignore
